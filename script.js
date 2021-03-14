@@ -23,35 +23,43 @@ const renderCountry = function (data, className = ``) {
   countriesContainer.style.opacity = `1`;
 };
 
-const getCountryandNeighbor = function (country) {
-  //Ajax call
-  const request = new XMLHttpRequest();
-  request.open("GET", `https://restcountries.eu/rest/v2/name/${country}`);
-  request.send();
+// const getCountryandNeighbor = function (country) {
+//   //Ajax call
+//   const request = new XMLHttpRequest();
+//   request.open("GET", `https://restcountries.eu/rest/v2/name/${country}`);
+//   request.send();
 
-  request.addEventListener("load", function () {
-    const [data] = JSON.parse(this.responseText);
+//   request.addEventListener("load", function () {
+//     const [data] = JSON.parse(this.responseText);
 
-    // render first country
-    renderCountry(data);
+//     // render first country
+//     renderCountry(data);
 
-    //neighbour
-    const [neighbor] = data.borders;
-    if (!neighbor) return;
+//     //neighbour
+//     const [neighbor] = data.borders;
+//     if (!neighbor) return;
 
-    const request2 = new XMLHttpRequest();
-    request2.open("GET", `https://restcountries.eu/rest/v2/alpha/${neighbor}`);
-    request2.send();
+//     const request2 = new XMLHttpRequest();
+//     request2.open("GET", `https://restcountries.eu/rest/v2/alpha/${neighbor}`);
+//     request2.send();
 
-    request2.addEventListener(`load`, function () {
-      const data2 = JSON.parse(this.responseText);
-      console.log(data2);
+//     request2.addEventListener(`load`, function () {
+//       const data2 = JSON.parse(this.responseText);
+//       console.log(data2);
 
-      renderCountry(data2, `neighbour`);
-    });
-  });
+//       renderCountry(data2, `neighbour`);
+//     });
+//   });
+// };
+// getCountryandNeighbor(`nigeria`);
+// getCountryandNeighbor(`usa`);
+// getCountryandNeighbor(`china`);
+// // getCountryandNeighbor(`uae`);
+
+const getCountryData = function (country) {
+  const request = fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+    .then((response) => response.json())
+    .then((data) => renderCountry(data[0]));
 };
-getCountryandNeighbor(`nigeria`);
-getCountryandNeighbor(`usa`);
-getCountryandNeighbor(`china`);
-// getCountryandNeighbor(`uae`);
+
+getCountryData(`nigeria`);
