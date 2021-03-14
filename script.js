@@ -4,14 +4,14 @@ const btn = document.querySelector(".btn-country");
 const countriesContainer = document.querySelector(".countries");
 
 ///////////////////////////////////////
+const getCountry = function (country) {
+  const request = new XMLHttpRequest();
+  request.open("GET", `https://restcountries.eu/rest/v2/name/${country}`);
+  request.send();
 
-const request = new XMLHttpRequest();
-request.open("GET", `https://restcountries.eu/rest/v2/name/nigeria`);
-request.send();
-
-request.addEventListener("load", function () {
-  const [data] = JSON.parse(this.responseText);
-  const html = `
+  request.addEventListener("load", function () {
+    const [data] = JSON.parse(this.responseText);
+    const html = `
    <article class="country">
     <img class="country__img" src=${data.flag} />
     <div class="country__data">
@@ -25,6 +25,11 @@ request.addEventListener("load", function () {
     </div>
 </article>`;
 
-  countriesContainer.insertAdjacentHTML(`beforeend`, html);
-  countriesContainer.style.opacity = `1`;
-});
+    countriesContainer.insertAdjacentHTML(`beforeend`, html);
+    countriesContainer.style.opacity = `1`;
+  });
+};
+getCountry(`nigeria`);
+getCountry(`usa`);
+getCountry(`china`);
+getCountry(`uae`);
