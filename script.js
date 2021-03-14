@@ -53,5 +53,5 @@ const getCountryandNeighbor = function (country) {
 };
 getCountryandNeighbor(`nigeria`);
 getCountryandNeighbor(`usa`);
-// getCountryandNeighbor(`china`);
+getCountryandNeighbor(`china`);
 // getCountryandNeighbor(`uae`);
