@@ -4,6 +4,7 @@ const btn = document.querySelector(".btn-country");
 const countriesContainer = document.querySelector(".countries");
 
 ///////////////////////////////////////
+
 const renderCountry = function (data, className = ``) {
   const html = `
     <article class=${className}>
@@ -20,7 +21,12 @@ const renderCountry = function (data, className = ``) {
  </article>`;
 
   countriesContainer.insertAdjacentHTML(`beforeend`, html);
-  countriesContainer.style.opacity = `1`;
+  // countriesContainer.style.opacity = `1`;
+};
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText(`beforeend`, msg);
+  // countriesContainer.style.opacity = 1;
 };
 
 // const getCountryandNeighbor = function (country) {
@@ -68,7 +74,13 @@ const getCountryData = function (country) {
       return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`);
     })
     .then((response) => response.json())
-    .then((data2) => renderCountry(data2, `neighbour`));
+    .then((data2) => renderCountry(data2, `neighbour`))
+    .catch((err) => renderError(`something went wrong: ${err}`))
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
 };
 
-getCountryData(`nigeria`);
+btn.addEventListener(`click`, function () {
+  getCountryData(`nigeria`);
+});
