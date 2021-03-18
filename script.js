@@ -151,9 +151,31 @@ TEST COORDINATES 2: 19.037, 72.873
 TEST COORDINATES 2: -33.933, 18.474
 */
 
+// whereAmI(19.037, 72.873);
+// whereAmI(-33.933, 18.474);
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   (position) => resolve(position),
+    //   (err) => reject(err)\
+    // );
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+// getPosition().then((pos) => console.log(pos));
+
 //task one
-const whereAmI = function (lat, lng) {
-  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+const whereAmI = function () {
+  getPosition()
+    .then((position) => {
+      console.log(position.coords);
+      const { latitude: lat, longitude: long } = position.coords;
+
+      return fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
+    })
+
     .then((response) => {
       //needed to catch the error beacause of the restriction of not more than 3 request per second
       if (!response.ok)
@@ -175,6 +197,4 @@ const whereAmI = function (lat, lng) {
     .catch((err) => console.log(`${err.message}`));
 };
 
-whereAmI(52.508, 13.381);
-whereAmI(19.037, 72.873);
-whereAmI(-33.933, 18.474);
+btn.addEventListener("click", whereAmI);
