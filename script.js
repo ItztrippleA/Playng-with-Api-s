@@ -167,34 +167,50 @@ const getPosition = function () {
 // getPosition().then((pos) => console.log(pos));
 
 //task one
-const whereAmI = function () {
-  getPosition()
-    .then((position) => {
-      console.log(position.coords);
-      const { latitude: lat, longitude: long } = position.coords;
+// const whereAmI = function () {
+//   getPosition()
+//     .then((position) => {
+//       console.log(position.coords);
 
-      return fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
-    })
+//       const { latitude: lat, longitude: long } = position.coords;
+//       //NOTE: Nigeria is not defined in this API🌚 🌚
+//       return fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
+//     })
 
-    .then((response) => {
-      //needed to catch the error beacause of the restriction of not more than 3 request per second
-      if (!response.ok)
-        throw new Error(`Problem with gecoding ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      console.log(`you are in ${data.city}, ${data.country}`);
+//     .then((response) => {
+//       //needed to catch the error beacause of the restriction of not more than 3 request per second
+//       if (!response.ok)
+//         throw new Error(`Problem with gecoding ${response.status}`);
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//       console.log(`you are in ${data.city}, ${data.country}`);
 
-      return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
-    })
-    .then((response) => {
-      if (!response.ok)
-        throw new Error(`Country not found (${response.status})`);
-      return response.json();
-    })
-    .then((data) => renderCountry(data[0]))
-    .catch((err) => console.log(`${err.message}`));
+//       return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+//     })
+//     .then((response) => {
+//       if (!response.ok)
+//         throw new Error(`Country not found (${response.status})`);
+//       return response.json();
+//     })
+//     .then((data) => renderCountry(data[0]))
+//     .catch((err) => console.log(`${err.message}`));
+// };
+
+// btn.addEventListener("click", whereAmI);
+
+const whereAmI = async function (country) {
+  const position = await getPosition();
+
+  const { latitude: lat, longitude: lon } = position.coords;
+  const res = await fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
+
+  const response = await fetch(
+    `https://restcountries.eu/rest/v2/name/${country}`
+  );
+  const data = await response.json();
+  renderCountry(data[0]);
 };
 
-btn.addEventListener("click", whereAmI);
+whereAmI(`Nigeria`);
