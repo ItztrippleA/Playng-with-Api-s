@@ -154,16 +154,6 @@ TEST COORDINATES 2: -33.933, 18.474
 // whereAmI(19.037, 72.873);
 // whereAmI(-33.933, 18.474);
 
-const getPosition = function () {
-  return new Promise(function (resolve, reject) {
-    // navigator.geolocation.getCurrentPosition(
-    //   (position) => resolve(position),
-    //   (err) => reject(err)\
-    // );
-    navigator.geolocation.getCurrentPosition(resolve, reject);
-  });
-};
-
 // getPosition().then((pos) => console.log(pos));
 
 //task one
@@ -200,17 +190,32 @@ const getPosition = function () {
 
 // btn.addEventListener("click", whereAmI);
 
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   (position) => resolve(position),
+    //   (err) => reject(err)\
+    // );
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
 const whereAmI = async function (country) {
+  // Geolocation
   const position = await getPosition();
+  const { latitude: lat, longitude: long } = position.coords;
 
-  const { latitude: lat, longitude: lon } = position.coords;
-  const res = await fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
+  // reverse geolocoding
+  const resGeo = await fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
+  const dataGeo = await resGeo.json();
+  console.log(dataGeo);
 
-  const response = await fetch(
-    `https://restcountries.eu/rest/v2/name/${country}`
-  );
-  const data = await response.json();
+  //country Data
+  const res = await fetch(`https://restcountries.eu/rest/v2/name/${country}`);
+  const data = await res.json();
   renderCountry(data[0]);
 };
 
+// would have dynamically slected the users country from the geocode api, but there is no country data for some location.
+//so the country name has to be manually passed in
 whereAmI(`Nigeria`);
