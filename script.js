@@ -200,22 +200,36 @@ const getPosition = function () {
   });
 };
 
-const whereAmI = async function (country) {
-  // Geolocation
-  const position = await getPosition();
-  const { latitude: lat, longitude: long } = position.coords;
+// const whereAmI = async function (country) {
+//   // Geolocation
+//   const position = await getPosition();
+//   const { latitude: lat, longitude: long } = position.coords;
 
-  // reverse geolocoding
-  const resGeo = await fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
-  const dataGeo = await resGeo.json();
-  console.log(dataGeo);
+//   // reverse geolocoding
+//   const resGeo = await fetch(`https://geocode.xyz/${lat},${long}?geoit=json`);
+//   const dataGeo = await resGeo.json();
+//   console.log(dataGeo);
 
-  //country Data
-  const res = await fetch(`https://restcountries.eu/rest/v2/name/${country}`);
-  const data = await res.json();
-  renderCountry(data[0]);
+//   //country Data
+//   const res = await fetch(`https://restcountries.eu/rest/v2/name/${country}`);
+//   const data = await res.json();
+//   renderCountry(data[0]);
+// };
+
+// // would have dynamically slected the users country from the geocode api, but there is no country data for some location.
+// //so the country name has to be manually passed in
+// whereAmI(`Nigeria`);
+
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    const data = await Promise.all([
+      getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
+      getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
+      getJSON(`https://restcountries.eu/rest/v2/name/${c3}`),
+    ]);
+    console.log(data);
+  } catch (err) {
+    console.error(`${err}`);
+  }
 };
-
-// would have dynamically slected the users country from the geocode api, but there is no country data for some location.
-//so the country name has to be manually passed in
-whereAmI(`Nigeria`);
+get3Countries(`portugal`, `canada`, `tanzania`);
