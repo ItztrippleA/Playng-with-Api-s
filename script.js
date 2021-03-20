@@ -220,16 +220,79 @@ const getPosition = function () {
 // //so the country name has to be manually passed in
 // whereAmI(`Nigeria`);
 
-const get3Countries = async function (c1, c2, c3) {
-  try {
-    const data = await Promise.all([
-      getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
-      getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
-      getJSON(`https://restcountries.eu/rest/v2/name/${c3}`),
-    ]);
-    console.log(data);
-  } catch (err) {
-    console.error(`${err}`);
-  }
+//this would only settles if all promises are settled
+// const get3Countries = async function (c1, c2, c3) {
+//   try {
+//     const data = await Promise.all([
+//       getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
+//       getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
+//       getJSON(`https://restcountries.eu/rest/v2/name/${c3}`),
+//     ]);
+//     console.log(data);
+//   } catch (err) {
+//     console.error(`${err}`);
+//   }
+// };
+// get3Countries(`portugal`, `canada`, `tanzania`);
+
+//promise.race settles if one of the promisses settles
+
+// (async function () {
+//   const res = await Promise.race([
+//     getJSON(`https://restcountries.eu/rest/v2/name/portugal`),
+//     getJSON(`https://restcountries.eu/rest/v2/name/canada`),
+//     getJSON(`https://restcountries.eu/rest/v2/name/egypt`),
+//   ]);
+//   console.log(res[0]);
+// })();
+
+//promise.allsettled returns an aray of all the settled promises
+//Other Promise Combinators: race, allSettled and any
+// Promise.race
+(async function () {
+  const res = await Promise.race([
+    getJSON(`https://restcountries.eu/rest/v2/name/italy`),
+    getJSON(`https://restcountries.eu/rest/v2/name/egypt`),
+    getJSON(`https://restcountries.eu/rest/v2/name/mexico`),
+  ]);
+  console.log(res[0]);
+})();
+
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error("Request took too long!"));
+    }, sec * 1000);
+  });
 };
-get3Countries(`portugal`, `canada`, `tanzania`);
+
+Promise.race([
+  getJSON(`https://restcountries.eu/rest/v2/name/tanzania`),
+  timeout(5),
+])
+  .then((res) => console.log(res[0]))
+  .catch((err) => console.error(err));
+
+// Promise.allSettled
+Promise.allSettled([
+  Promise.resolve("Success"),
+  Promise.reject("ERROR"),
+  Promise.resolve("Another success"),
+]).then((res) => console.log(res));
+
+Promise.all([
+  Promise.resolve("Success"),
+  Promise.reject("ERROR"),
+  Promise.resolve("Another success"),
+])
+  .then((res) => console.log(res))
+  .catch((err) => console.error(err));
+
+// Promise.any [ES2021]
+Promise.any([
+  Promise.resolve("Success"),
+  Promise.reject("ERROR"),
+  Promise.resolve("Another success"),
+])
+  .then((res) => console.log(res))
+  .catch((err) => console.error(err));
